@@ -6,3 +6,5 @@ ChannelFuture future = client.increment("stats1");
 client.timing("stats1", 23422); // in MS
 client.gauge("stats1", 787);
 ```
+
+##### Requires JDK 7
