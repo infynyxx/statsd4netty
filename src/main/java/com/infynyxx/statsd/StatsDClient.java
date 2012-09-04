@@ -47,6 +47,7 @@ public class StatsDClient {
     public void shutdown() throws Exception{
         channel.closeFuture().sync();
         bootstrap.shutdown();
+        log.info("Shutting down bootstrap");
     }
 
     private ChannelFuture doSend(final String stat) {
