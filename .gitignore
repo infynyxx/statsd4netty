@@ -1,0 +1,9 @@
+App.java
+gc.log
+target/
+*.iml
+*.swp
+surefire-reports/
+.idea/
+*.class
+*.jar
