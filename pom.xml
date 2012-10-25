@@ -43,7 +43,13 @@
       <dependency>
           <groupId>io.netty</groupId>
           <artifactId>netty</artifactId>
-          <version>4.0.0.Alpha2</version>
+          <version>4.0.0.Alpha5</version>
+      </dependency>
+
+      <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <version>13.0.1</version> <!-- https://code.google.com/p/guava-libraries/wiki/Release13 -->
       </dependency>
   </dependencies>
 
@@ -74,4 +80,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>Infynyxx</id>
+            <name>Infynyxx-snapshots</name>
+            <url>http://mvn.infynyxx.com/artifactory/external</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
