@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
@@ -54,10 +55,35 @@ public class StatsDClient {
         return new NioEventLoopGroup(0, THREAD_FACTORY); // if nThreads = 0 means, Netty will use 2 X Available Cores threads
     }
 
-    public void shutdown() throws Exception{
-        channel.closeFuture().sync();
-        bootstrap.shutdown();
-        log.info("Shutting down bootstrap");
+
+    /**
+     * Shutdown datagram channel
+     * @throws StatsDClientException
+     */
+    public void shutdown() throws StatsDClientException {
+        log.info("Shutting down StatsD Client");
+        try {
+            channel.closeFuture().sync();
+            bootstrap.shutdown();
+        } catch (Exception e) {
+            throw new StatsDClientException(e);
+        }
+    }
+
+    /**
+     * Shutdown datagram channel while waiting to be completed within the specified time limit and also releasing ChannelFactory resources
+     * This method should be called when shutting down the application
+     * @param timeToWait
+     * @param unit
+     * @throws StatsDClientException
+     */
+    public void shutdown(long timeToWait, TimeUnit unit) throws StatsDClientException {
+        log.info("Shutting down StatsD Client");
+        try {
+            channel.close().sync().await(timeToWait, unit);
+        } catch (InterruptedException e) {
+            throw new StatsDClientException(e);
+        }
     }
 
     private ChannelFuture doSend(final String stat) {
