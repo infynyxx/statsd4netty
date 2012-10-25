@@ -3,7 +3,9 @@ package com.infynyxx.statsd;
 import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.Random;
+import java.util.concurrent.ThreadFactory;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
@@ -23,6 +25,10 @@ public class StatsDClient {
     private static Random RNG = new Random();
     private static final Logger log = LoggerFactory.getLogger(StatsDClient.class);
 
+    private static final ThreadFactory THREAD_FACTORY = new ThreadFactoryBuilder()
+            .setNameFormat("statsd-java-client-%d")
+            .build();
+
     private final Bootstrap bootstrap;
     private final Channel channel;
 
@@ -35,13 +41,17 @@ public class StatsDClient {
     public StatsDClient(InetSocketAddress inetSocketAddress) throws Exception {
         address = inetSocketAddress;
         bootstrap = new Bootstrap();
-        bootstrap.group(new NioEventLoopGroup())
-                .channel(new NioDatagramChannel())
+        bootstrap.group(configureNioEventLoopGroup())
+                .channel(NioDatagramChannel.class)
                 .remoteAddress(address)
                 .option(ChannelOption.SO_BROADCAST, true)
                 .handler(new StatsDClientInitializer());
 
         channel = bootstrap.connect().sync().channel();
+    }
+
+    private static NioEventLoopGroup configureNioEventLoopGroup() {
+        return new NioEventLoopGroup(0, THREAD_FACTORY); // if nThreads = 0 means, Netty will use 2 X Available Cores threads
     }
 
     public void shutdown() throws Exception{

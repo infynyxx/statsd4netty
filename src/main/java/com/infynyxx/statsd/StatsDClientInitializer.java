@@ -16,7 +16,7 @@ public class StatsDClientInitializer extends ChannelInitializer<DatagramChannel>
     private static final StringEncoder ENCODER = new StringEncoder();
 
     @Override
-    public void initChannel(DatagramChannel ch) throws Exception {
+    public void initChannel(final DatagramChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
 
         // Add the text line codec combination first,
