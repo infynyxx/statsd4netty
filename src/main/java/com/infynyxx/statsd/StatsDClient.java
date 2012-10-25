@@ -35,6 +35,8 @@ public class StatsDClient {
 
     private final InetSocketAddress address;
 
+    private String metricPrefix = "";
+
     public StatsDClient(String host, int port) throws Exception{
         this(new InetSocketAddress(host, port));
     }
@@ -93,13 +95,14 @@ public class StatsDClient {
     }
 
     private ChannelFuture send(double sampleRate, String stat) {
+        final String finalStat = this.metricPrefix + stat;
         if (sampleRate < 1.0) {
             if (RNG.nextDouble() <= sampleRate) {
-                final String statString = String.format("%s|@%f", stat, sampleRate);
+                final String statString = String.format("%s|@%f", finalStat, sampleRate);
                 return doSend(statString);
             }
         }
-        return doSend(stat);
+        return doSend(finalStat);
     }
 
     public ChannelFuture increment(String key) {
@@ -128,6 +131,14 @@ public class StatsDClient {
     public ChannelFuture gauge(String key, int value) {
         final String stat = String.format(Locale.ENGLISH, "%s:%d|g", key, value);
         return send(1.0, stat);
+    }
+
+    /**
+     * Set base metric prefix
+     * @param prefix
+     */
+    public void setMetricPrefix(final String prefix) {
+        this.metricPrefix = prefix + ".";
     }
 }
 
