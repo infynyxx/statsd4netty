@@ -78,6 +78,14 @@
                     <mainClass>com.infynyxx.statsd.App</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <printSummary>true</printSummary>
+                    <useFile>false</useFile> <!-- Show to console -->
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

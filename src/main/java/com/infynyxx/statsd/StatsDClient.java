@@ -41,7 +41,7 @@ public class StatsDClient {
         this(new InetSocketAddress(host, port));
     }
 
-    public StatsDClient(InetSocketAddress inetSocketAddress) throws Exception {
+    public StatsDClient(InetSocketAddress inetSocketAddress) throws StatsDClientException {
         address = inetSocketAddress;
         bootstrap = new Bootstrap();
         bootstrap.group(configureNioEventLoopGroup())
@@ -50,7 +50,11 @@ public class StatsDClient {
                 .option(ChannelOption.SO_BROADCAST, true)
                 .handler(new StatsDClientInitializer());
 
-        channel = bootstrap.connect().sync().channel();
+        try {
+            channel = bootstrap.connect().sync().channel();
+        } catch (InterruptedException e) {
+            throw new StatsDClientException(e);
+        }
     }
 
     private static NioEventLoopGroup configureNioEventLoopGroup() {
@@ -65,7 +69,7 @@ public class StatsDClient {
     public void shutdown() throws StatsDClientException {
         log.info("Shutting down StatsD Client");
         try {
-            channel.closeFuture().sync();
+            //channel.closeFuture().sync();
             bootstrap.shutdown();
         } catch (Exception e) {
             throw new StatsDClientException(e);
