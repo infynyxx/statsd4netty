@@ -73,6 +73,8 @@
                     <configuration>
                         <printSummary>true</printSummary>
                         <useFile>false</useFile> <!-- Show to console -->
+                        <forkMode>once</forkMode>
+                        <runOrder>random</runOrder>
                     </configuration>
                 </plugin>
             </plugins>
