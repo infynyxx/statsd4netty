@@ -24,7 +24,6 @@ public class StatsDClientHandler extends ChannelInboundMessageHandlerAdapter<Dat
 
     @Override
     public void messageReceived(ChannelHandlerContext channelHandlerContext, DatagramPacket datagramPacket) throws Exception {
-        channelHandlerContext.write(new DatagramPacket(Unpooled.copiedBuffer("hello", CharsetUtil.UTF_8), datagramPacket.remoteAddress()));
-        logger.info(datagramPacket.toString());
+        logger.info("Received: " + datagramPacket.toString());
     }
 }
