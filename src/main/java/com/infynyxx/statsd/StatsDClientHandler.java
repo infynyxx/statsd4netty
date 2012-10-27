@@ -1,10 +1,8 @@
 package com.infynyxx.statsd;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.channel.socket.DatagramPacket;
-import io.netty.util.CharsetUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
