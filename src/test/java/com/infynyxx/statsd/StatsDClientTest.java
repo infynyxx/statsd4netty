@@ -61,9 +61,9 @@ public class StatsDClientTest {
     }
 
     @Test
-    public void testSendWithDefaultIncrement() throws StatsDClientException, SocketException, InterruptedException {
+    public void testSendWithDefaultIncrement() throws StatsDClientException, InterruptedException {
         Thread.sleep(100L);
-        StatsDClient statsDClient = new StatsDClient(new InetSocketAddress("localhost", DUMMY_STATSD_SERVER_PORT));
+        final StatsDClient statsDClient = new StatsDClient(new InetSocketAddress("localhost", DUMMY_STATSD_SERVER_PORT));
         final String metrics = "mailer.metric1";
         statsDClient.increment(metrics).sync();
         statsDClient.increment(metrics).sync();
@@ -76,8 +76,41 @@ public class StatsDClientTest {
         statsDClient.shutdown();
     }
 
+    @Test
+    public void testSendWithCustomIncrementCounter() throws StatsDClientException, InterruptedException {
+        final StatsDClient statsDClient = new StatsDClient(new InetSocketAddress("localhost", DUMMY_STATSD_SERVER_PORT));
+        final String metrics = "mailer.metric1";
+        final int count = 25;
+        statsDClient.increment(metrics, count).sync();
+        statsDClient.increment(metrics).sync();
+        statsDClient.increment(metrics).sync();
 
-    public static final class DummyStatsDServer {
+        Thread.sleep(100L); // this is required since, it's hard to determine when the messages have arrived to Server queue
+
+        assertTrue(server.getMessagesReceived().contains(String.format("%s:%d|c", metrics, count)));
+        assertEquals(3, server.getMessagesReceived().size());
+
+        statsDClient.shutdown();
+    }
+
+    @Test
+    public void testSetPrefix() throws StatsDClientException, InterruptedException {
+        final StatsDClient statsDClient = new StatsDClient(new InetSocketAddress("localhost", DUMMY_STATSD_SERVER_PORT));
+        String prefix = "mailer";
+        statsDClient.setMetricPrefix(prefix);
+        String metric1 = "metric1";
+        statsDClient.increment(metric1).sync();
+        statsDClient.increment(metric1).sync();
+
+        Thread.sleep(100L);
+
+        assertTrue(server.getMessagesReceived().contains(String.format("%s:%d|c", prefix + "." + metric1, 1)));
+
+        statsDClient.shutdown();
+    }
+
+
+    private static final class DummyStatsDServer {
         private final int port;
 
         private static final Logger log = LoggerFactory.getLogger(DummyStatsDServer.class);
