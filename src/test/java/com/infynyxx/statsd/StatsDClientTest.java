@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class StatsDClientTest {
-    private static final int DUMMY_STATSD_SERVER_PORT = 9999;
+    private static final int DUMMY_STATSD_SERVER_PORT = AvailablePortFinder.getNextAvailable(9999);
 
     private DummyStatsDServer server = null;
 
