@@ -1,5 +1,6 @@
 package com.infynyxx.statsd;
 
+import io.netty.buffer.BufType;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.DatagramChannel;
@@ -13,7 +14,7 @@ import io.netty.handler.codec.string.StringEncoder;
  */
 public class StatsDClientInitializer extends ChannelInitializer<DatagramChannel> {
     private static final StringDecoder DECODER = new StringDecoder();
-    private static final StringEncoder ENCODER = new StringEncoder();
+    private static final StringEncoder ENCODER = new StringEncoder(BufType.BYTE);
 
     @Override
     public void initChannel(final DatagramChannel ch) throws Exception {

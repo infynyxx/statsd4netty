@@ -5,16 +5,14 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
 import io.netty.util.CharsetUtil;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +65,7 @@ public class StatsDClient {
      * @throws StatsDClientException
      */
     public void shutdown() throws StatsDClientException {
-        log.info("Shutting down StatsD Client");
+        log.info("Shutting down StatsD Sender");
         try {
             //channel.closeFuture().sync();
             bootstrap.shutdown();
@@ -84,7 +82,7 @@ public class StatsDClient {
      * @throws StatsDClientException
      */
     public void shutdown(long timeToWait, TimeUnit unit) throws StatsDClientException {
-        log.info("Shutting down StatsD Client");
+        log.info("Shutting down StatsD Sender");
         try {
             channel.close().sync().await(timeToWait, unit);
         } catch (InterruptedException e) {
